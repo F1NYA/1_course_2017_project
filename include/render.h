@@ -1,0 +1,8 @@
+//
+// Created by George Kobelev on 3/19/17.
+//
+
+#ifndef INC_1_COURSE_2017_PROJECT_RENDER_H_H
+#define INC_1_COURSE_2017_PROJECT_RENDER_H_H
+
+#endif //INC_1_COURSE_2017_PROJECT_RENDER_H_H
