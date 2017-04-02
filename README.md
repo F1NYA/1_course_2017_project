@@ -6,7 +6,7 @@
 
 ##**_"Однокористувацька гра у жанрі шутер з псевдо-3D графікою"_**##
 
-####Посилання на [документ](http://www.example.com/) на google docs.####
+####Посилання на [документ](https://docs.google.com/document/d/16jjUGhUiKhJXCBSNBv4_PfKjiFejbFjXPHtaDvIbzwg/edit?usp=sharing) на google docs.####
 
 
 ### Вступ ###
