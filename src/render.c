@@ -16,7 +16,7 @@ void LoadData()
         exit(1);
     }
     char Buf[256], word[256], *ptr;
-    struct xy* vert = NULL, v;
+    XY* vert = NULL, v;
     int NumVertices = 0;
     unsigned int n, m;
     while(fgets(Buf, sizeof(Buf), fp))
@@ -33,7 +33,7 @@ void LoadData()
 
             case 's': // sector
                 sectors = realloc(sectors, ++NumSectors * sizeof(*sectors));
-                struct sector* sect = &sectors[NumSectors-1];
+                Sector* sect = &sectors[NumSectors-1];
                 int* num = NULL;
                 sscanf(ptr += n, "%lf%lf%n", &sect->floor, &sect->ceil, &n);
                 for(m = 0; sscanf(ptr += n, "%32s%n", word, &n) == 1 && word[0] != '#'; )
@@ -59,7 +59,7 @@ void LoadData()
             case 'p':; // player
                 float angle;
                 sscanf(ptr += n, "%f %f %f %d", &v.x, &v.y, &angle,&n);
-                player = (struct player) {
+                player = (Player) {
                         {v.x, v.y, 0},
                         {0,0,0},
                         angle,0,0,0, n }; // TODO: Range checking
@@ -108,8 +108,8 @@ void MovePlayer(double dx, double dy)
      * clockwise order, PointSide will always return -1 for a point
      * that is outside the sector and 0 or 1 for a point that is inside.
      */
-    const struct sector* const sect = &sectors[player.sector];
-    const struct xy* const vert = sect->vertex;
+    Sector* const sect = &sectors[player.sector];
+    XY* const vert = sect->vertex;
     for(unsigned s = 0; s < (sect->npoints); ++s)
         if(sect->neighbors[s] >= 0
            && IntersectBox(px, py, px+dx, py+dy, vert[s+0].x, vert[s+0].y, vert[s+1].x, vert[s+1].y)
