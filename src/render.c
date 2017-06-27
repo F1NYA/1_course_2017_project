@@ -4,8 +4,6 @@
 
 #include <render.h>
 #include <macros.h>
-#include <game.h>
-#include <collections/player.h>
 
 typedef struct item { int sectorno, sx1, sx2; } Item;
 enum { MaxQueue = 32 };  // maximum number of pending portal renders
@@ -169,7 +167,8 @@ void DrawScreen(Game * game) {
                     head = queue;
                 }
             }
-        } // for s in sector's edges
+        }
+        // for s in sector's edges
         ++renderedsectors[now.sectorno];
     } while(head != tail); // render any other queued sectors
 }

@@ -16,5 +16,4 @@
 
 void DrawScreen(Game * game);
 
-
 #endif //PROGBASE3_RENDER_H
