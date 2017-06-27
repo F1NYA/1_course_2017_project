@@ -16,8 +16,8 @@
 
 #define clamp(a, mi,ma)      min(max(a,mi),ma)
 
-#define W 608
-#define H 480
+#define W 2048
+#define H 1080
 
 #define EyeHeight  6
 #define DuckHeight 2.5

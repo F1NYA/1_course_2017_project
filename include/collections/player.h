@@ -7,6 +7,8 @@
 
 #include "vector.h"
 
+//enum STATE{GROUND, FALLING, MOVING, DUCKING};
+
 typedef struct player {
     XYZ where, velocity;
     double angle, anglesin, anglecos, yaw;

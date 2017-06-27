@@ -6,7 +6,7 @@
 #include <macros.h>
 
 typedef struct item { int sectorno, sx1, sx2; } Item;
-enum { MaxQueue = 32 };  // maximum number of pending portal renders
+enum { MaxQueue = 32 };  // maximum number of portal renders
 
 void setnarr(int *arr, int value, int num) {
     for (int i = 0; i < num; ++i) arr[i] = value;

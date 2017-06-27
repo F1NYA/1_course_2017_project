@@ -7,6 +7,12 @@
 
 #include <collections/game.h>
 
-void MovePlayer(Game * game, double dx, double dy);
+/**
+ * @brief check for collision and set new pos for player
+ * @param game to access for curr player state
+ * @param dx {x} of velocity vector
+ * @param dy {y} of velocity vector
+ */
+void MovePlayer(Game * game, XY dvec);
 
 #endif //PROGBASE3_PLAYER_FUNC_H

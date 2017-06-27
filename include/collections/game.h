@@ -9,6 +9,12 @@
 #include "player.h"
 #include "sector.h"
 
+/**
+ * @struct Game
+ * @brief Structure to save and give access for main variables.
+ * @var Game::surface
+ * Member 'surface' is
+ */
 typedef struct game{
     SDL_Surface * surface;
     Player player;

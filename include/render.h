@@ -14,6 +14,10 @@
 #include <collections/sector.h>
 #include <collections/game.h>
 
+/**
+ * @brief drawing
+ * @param game using for game statement;
+ */
 void DrawScreen(Game * game);
 
 #endif //PROGBASE3_RENDER_H

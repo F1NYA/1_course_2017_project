@@ -5,12 +5,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
-#include <math.h>
 #include <macros.h>
-#include <game.h>
 #include <data_loader.h>
 #include <render.h>
 #include <player_func.h>
+#include <collections/vector.h>
 
 int main(int argv, char ** argc) {
 
@@ -23,7 +22,7 @@ int main(int argv, char ** argc) {
 
     SDL_Init(SDL_INIT_EVERYTHING);
 
-    SDL_Window *win = SDL_CreateWindow("MY KURSACH KEK", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_FOREIGN | SDL_WINDOW_OPENGL);
+    SDL_Window *win = SDL_CreateWindow("MY KURSACH KEK", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, W, H, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL);
 
 
     SDL_ShowCursor(SDL_DISABLE);
@@ -53,35 +52,30 @@ int main(int argv, char ** argc) {
         /* Vertical collision detection */
         double eyeheight = ducking ? DuckHeight : EyeHeight;
         ground = !falling;
-        if(falling)
-        {
+        if(falling) {
             game.player.velocity.z -= 0.05f; /* Add gravity */
             double nextz = game.player.where.z + game.player.velocity.z;
             int n = game.player.sector;
             Sector* sect = &(game.sectors)[0];
-            if(game.player.velocity.z < 0 && nextz  < game.sectors[game.player.sector].floor + eyeheight) // When going down
-            {
+            if(game.player.velocity.z < 0 && nextz  < game.sectors[game.player.sector].floor + eyeheight) { // When going down
+
                 /* Fix to ground */
                 game.player.where.z    = game.sectors[game.player.sector].floor + eyeheight;
                 game.player.velocity.z = 0;
                 falling = 0;
                 ground  = 1;
-            }
-            else if(game.player.velocity.z > 0 && nextz > game.sectors[game.player.sector].ceil) // When going up
-            {
+            } else if(game.player.velocity.z > 0 && nextz > game.sectors[game.player.sector].ceil) {// When going up
                 /* Prevent jumping above ceiling */
                 game.player.velocity.z = 0;
                 falling = 1;
             }
-            if(falling)
-            {
+            if(falling) {
                 game.player.where.z += game.player.velocity.z;
                 moving = 1;
             }
         }
         /* Horizontal collision detection */
-        if(moving)
-        {
+        if(moving) {
             double px = game.player.where.x,    py = game.player.where.y;
             double dx = game.player.velocity.x, dy = game.player.velocity.y;
 
@@ -107,7 +101,7 @@ int main(int argv, char ** argc) {
                         moving = 0;
                     }
                 }
-            MovePlayer(&game,dx, dy);
+            MovePlayer(&game,(XY){dx,dy});
             falling = 1;
         }
 
@@ -142,7 +136,7 @@ int main(int argv, char ** argc) {
         game.player.angle += x * 0.03f;
         yaw          = clamp(yaw - y*0.05f, -5, 5);
         game.player.yaw   = yaw - game.player.velocity.z*0.5f;
-        MovePlayer(&game,0,0);
+        MovePlayer(&game,(XY){0,0});
 
         double move_vec[2] = {0.f, 0.f};
         if(wsad[0]) { move_vec[0] += game.player.anglecos*0.2f; move_vec[1] += game.player.anglesin*0.2f; }
@@ -157,7 +151,7 @@ int main(int argv, char ** argc) {
 
         if(pushing) moving = 1;
 
-        SDL_Delay(10);
+        SDL_Delay(5);
     }
 
     done:
