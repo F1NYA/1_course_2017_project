@@ -8,6 +8,4 @@
 typedef struct xy { double x, y;} XY;
 typedef struct xyz { double x, y, z;} XYZ;
 
-
-
 #endif //PROGBASE3_VECTOR_H
