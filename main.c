@@ -10,25 +10,22 @@
 #include <stdlib.h>
 #include <SDL2/SDL.h>
 #include <math.h>
+#include <macros.h>
+#include <game.h>
+#include <data_loader.h>
 #include <render.h>
-
-#define W 608
-#define H 480
-
-#define EyeHeight  6
-#define DuckHeight 2.5
-#define HeadMargin 1
-#define KneeHeight 2
-#define hfov (0.73f*H)
-#define vfov (.2f*H)
-
+#include <player_func.h>
 
 int main(int argv, char ** argc) {
 
-    LoadData();
+    Game game = {.surface = NULL, .sectors = NULL, .numSectors = 0};
+
+
+    uploadData(&game);
+
+    Sector* sect = &(game.sectors[0]);
 
     SDL_Init(SDL_INIT_EVERYTHING);
-
 
     SDL_Window *win = SDL_CreateWindow("MY KURSACH KEK", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, SDL_WINDOW_FOREIGN | SDL_WINDOW_OPENGL);
 
@@ -36,62 +33,63 @@ int main(int argv, char ** argc) {
     SDL_ShowCursor(SDL_DISABLE);
 
     int wsad[4]={0,0,0,0}, ground=0, falling=1, moving=0, ducking=0;
-    float yaw = 0;
+    double yaw = 0;
 
     SDL_Renderer *ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
 
-    surface = SDL_CreateRGBSurface(0, W, H, 32, 0, 0, 0, 0);
+    game.surface = SDL_CreateRGBSurface(0, W, H, 32, 0, 0, 0, 0);
 
-    SDL_Texture *tex = SDL_CreateTextureFromSurface(ren, surface);
+    SDL_Texture *tex = SDL_CreateTextureFromSurface(ren, game.surface);
+
+
 
     while(1)
     {
-        SDL_LockSurface(surface);
-        DrawScreen();
-        SDL_UpdateTexture(tex, NULL, surface->pixels, surface->pitch);
-        SDL_UnlockSurface(surface);
-
-
-
+        SDL_LockSurface(game.surface);
+        DrawScreen(&game);
+        SDL_UpdateTexture(tex, NULL, game.surface->pixels, game.surface->pitch);
+        SDL_UnlockSurface(game.surface);
 
         SDL_RenderClear(ren);
         SDL_RenderCopy(ren, tex, NULL, NULL);
         SDL_RenderPresent(ren);
 
         /* Vertical collision detection */
-        float eyeheight = ducking ? DuckHeight : EyeHeight;
+        double eyeheight = ducking ? DuckHeight : EyeHeight;
         ground = !falling;
         if(falling)
         {
-            player.velocity.z -= 0.05f; /* Add gravity */
-            float nextz = player.where.z + player.velocity.z;
-            if(player.velocity.z < 0 && nextz  < sectors[player.sector].floor + eyeheight) // When going down
+            game.player.velocity.z -= 0.05f; /* Add gravity */
+            double nextz = game.player.where.z + game.player.velocity.z;
+            int n = game.player.sector;
+            Sector* sect = &(game.sectors)[0];
+            if(game.player.velocity.z < 0 && nextz  < game.sectors[game.player.sector].floor + eyeheight) // When going down
             {
                 /* Fix to ground */
-                player.where.z    = sectors[player.sector].floor + eyeheight;
-                player.velocity.z = 0;
+                game.player.where.z    = game.sectors[game.player.sector].floor + eyeheight;
+                game.player.velocity.z = 0;
                 falling = 0;
                 ground  = 1;
             }
-            else if(player.velocity.z > 0 && nextz > sectors[player.sector].ceil) // When going up
+            else if(game.player.velocity.z > 0 && nextz > game.sectors[game.player.sector].ceil) // When going up
             {
                 /* Prevent jumping above ceiling */
-                player.velocity.z = 0;
+                game.player.velocity.z = 0;
                 falling = 1;
             }
             if(falling)
             {
-                player.where.z += player.velocity.z;
+                game.player.where.z += game.player.velocity.z;
                 moving = 1;
             }
         }
         /* Horizontal collision detection */
         if(moving)
         {
-            float px = player.where.x,    py = player.where.y;
-            float dx = player.velocity.x, dy = player.velocity.y;
+            double px = game.player.where.x,    py = game.player.where.y;
+            double dx = game.player.velocity.x, dy = game.player.velocity.y;
 
-            const struct sector* const sect = &sectors[player.sector];
+            const struct sector* const sect = &(game.sectors)[game.player.sector];
             const struct xy* const vert = sect->vertex;
             /* Check if the player is about to cross one of the sector's edges */
             for(unsigned s = 0; s < sect->npoints; ++s)
@@ -99,21 +97,21 @@ int main(int argv, char ** argc) {
                    && PointSide(px+dx, py+dy, vert[s+0].x, vert[s+0].y, vert[s+1].x, vert[s+1].y) < 0)
                 {
                     /* Check where the hole is. */
-                    float hole_low  = sect->neighbors[s] < 0 ?  9e9 : max(sect->floor, sectors[sect->neighbors[s]].floor);
-                    float hole_high = sect->neighbors[s] < 0 ? -9e9 : min(sect->ceil,  sectors[sect->neighbors[s]].ceil );
+                    double hole_low  = sect->neighbors[s] < 0 ?  9e9 : max(sect->floor, game.sectors[sect->neighbors[s]].floor);
+                    double hole_high = sect->neighbors[s] < 0 ? -9e9 : min(sect->ceil,  game.sectors[sect->neighbors[s]].ceil );
                     /* Check whether we're bumping into a wall. */
-                    if(hole_high < player.where.z+HeadMargin
-                       || hole_low  > player.where.z-eyeheight+KneeHeight)
+                    if(hole_high < game.player.where.z+HeadMargin
+                       || hole_low  > game.player.where.z-eyeheight+KneeHeight)
                     {
                         /* Bumps into a wall! Slide along the wall. */
                         /* This formula is from Wikipedia article "vector projection". */
-                        float xd = vert[s+1].x - vert[s+0].x, yd = vert[s+1].y - vert[s+0].y;
+                        double xd = vert[s+1].x - vert[s+0].x, yd = vert[s+1].y - vert[s+0].y;
                         dx = xd * (dx*xd + yd*dy) / (xd*xd + yd*yd);
                         dy = yd * (dx*xd + yd*dy) / (xd*xd + yd*yd);
                         moving = 0;
                     }
                 }
-            MovePlayer(dx, dy);
+            MovePlayer(&game,dx, dy);
             falling = 1;
         }
 
@@ -131,7 +129,7 @@ int main(int argv, char ** argc) {
                         case 'd': wsad[3] = ev.type==SDL_KEYDOWN; break;
                         case 'q': goto done;
                         case ' ': /* jump */
-                            if(ground) { player.velocity.z += 0.5; falling = 1; }
+                            if(ground) { game.player.velocity.z += 0.5; falling = 1; }
                             break;
                         case SDLK_LCTRL: /* duck */
                         case SDLK_RCTRL: ducking = ev.type==SDL_KEYDOWN; falling=1; break;
@@ -144,65 +142,36 @@ int main(int argv, char ** argc) {
         /* mouse aiming */
         int x,y;
         SDL_GetRelativeMouseState(&x,&y);
-        player.angle += x * 0.03f;
+        //printf("%d, %d", x, y);
+        game.player.angle += x * 0.03f;
         yaw          = clamp(yaw - y*0.05f, -5, 5);
-        player.yaw   = yaw - player.velocity.z*0.5f;
-        MovePlayer(0,0);
+        game.player.yaw   = yaw - game.player.velocity.z*0.5f;
+        MovePlayer(&game,0,0);
 
-        float move_vec[2] = {0.f, 0.f};
-        if(wsad[0]) { move_vec[0] += player.anglecos*0.2f; move_vec[1] += player.anglesin*0.2f; }
-        if(wsad[1]) { move_vec[0] -= player.anglecos*0.2f; move_vec[1] -= player.anglesin*0.2f; }
-        if(wsad[2]) { move_vec[0] += player.anglesin*0.2f; move_vec[1] -= player.anglecos*0.2f; }
-        if(wsad[3]) { move_vec[0] -= player.anglesin*0.2f; move_vec[1] += player.anglecos*0.2f; }
+        double move_vec[2] = {0.f, 0.f};
+        if(wsad[0]) { move_vec[0] += game.player.anglecos*0.2f; move_vec[1] += game.player.anglesin*0.2f; }
+        if(wsad[1]) { move_vec[0] -= game.player.anglecos*0.2f; move_vec[1] -= game.player.anglesin*0.2f; }
+        if(wsad[2]) { move_vec[0] += game.player.anglesin*0.2f; move_vec[1] -= game.player.anglecos*0.2f; }
+        if(wsad[3]) { move_vec[0] -= game.player.anglesin*0.2f; move_vec[1] += game.player.anglecos*0.2f; }
         int pushing = wsad[0] || wsad[1] || wsad[2] || wsad[3];
-        float acceleration = pushing ? 0.4 : 0.2;
+        double acceleration = pushing ? 0.4 : 0.2;
 
-        player.velocity.x = player.velocity.x * (1-acceleration) + move_vec[0] * acceleration;
-        player.velocity.y = player.velocity.y * (1-acceleration) + move_vec[1] * acceleration;
+        game.player.velocity.x = game.player.velocity.x * (1-acceleration) + move_vec[0] * acceleration;
+        game.player.velocity.y = game.player.velocity.y * (1-acceleration) + move_vec[1] * acceleration;
 
         if(pushing) moving = 1;
 
         SDL_Delay(10);
     }
+
     done:
-    UnloadData();
+
+    unloadData(&game);
     SDL_DestroyTexture(tex);
     SDL_DestroyRenderer(ren);
     SDL_DestroyWindow(win);
     SDL_Quit();
     return 0;
-
-    /*
-    SDL_Renderer *ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (ren == nullptr){
-        std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
-        return 1;
-    }
-
-    SDL_Surface *bmp = SDL_LoadBMP("../hello.bmp");
-    if (bmp == nullptr){
-        std::cout << "SDL_LoadBMP Error: " << SDL_GetError() << std::endl;
-        return 1;
-    }
-
-    SDL_Texture *tex = SDL_CreateTextureFromSurface(ren, bmp);
-    SDL_FreeSurface(bmp);
-    if (tex == nullptr){
-        std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
-        return 1;
-    }
-
-    SDL_RenderClear(ren);
-    SDL_RenderCopy(ren, tex, NULL, NULL);
-    SDL_RenderPresent(ren);
-
-    SDL_Delay(2000);
-
-    SDL_DestroyTexture(tex);
-    SDL_DestroyRenderer(ren);
-    SDL_DestroyWindow(win);
-    SDL_Quit();
-    */
 }
 
 
