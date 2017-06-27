@@ -2,10 +2,6 @@
 // Created by George Kobelev on 4/10/17.
 //
 
-/// fibonachi - Recursive function.
-/// @param x - Counter for returned number.
-/// @return - Return x.
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
