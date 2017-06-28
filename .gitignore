@@ -1,5 +1,5 @@
 # Created by .ignore support plugin (hsz.mobi)
-/docs/
+
 /cmake-build-debug/
 ### C template
 # Prerequisites
@@ -131,3 +131,5 @@ fabric.properties
 *.out
 *.app
 
+/docs/latex/
+/docs/html/
