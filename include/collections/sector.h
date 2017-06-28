@@ -7,6 +7,11 @@
 
 #include "vector.h"
 
+/**
+ * @brief Structure that is a representation of prism.
+ * @struct Sector
+ *
+ */
 typedef struct sector {
     double floor, ceil;
     XY *vertex;

@@ -13,7 +13,13 @@
  * @struct Game
  * @brief Structure to save and give access for main variables.
  * @var Game::surface
- * Member 'surface' is
+ * Member 'surface' is a poiter to structure that contains a collection of pixels used in software blitting.
+ * @var Game::player
+ * Member 'player' is a structure that contains player statement.
+ * @var Game::sectors
+ * Member 'sectors' is a realisation of dynamic array.
+ * @var Game::numSectors
+ * Member 'numSectors' is number of sectors in game.
  */
 typedef struct game{
     SDL_Surface * surface;

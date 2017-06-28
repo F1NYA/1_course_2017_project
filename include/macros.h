@@ -26,6 +26,10 @@
 #define hfov (0.73f*H)
 #define vfov (.2f*H)
 
+#define NEAR_Z 1e-4f
+#define FAR_Z  5
+#define NEAR_SIDE 1e-5f
+#define FAR_SIDE 20.f
 
 #define vxs(x0,y0, x1,y1)    ((x0)*(y1) - (x1)*(y0))   // vxs: Vector cross product
 // Overlap:  Determine whether the two number ranges overlap.
