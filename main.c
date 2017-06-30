@@ -22,7 +22,7 @@ int main(int argv, char ** argc) {
 
     SDL_Init(SDL_INIT_EVERYTHING);
 
-    SDL_Window *win = SDL_CreateWindow("MY KURSACH KEK", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, W, H, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL);
+    SDL_Window *win = SDL_CreateWindow("PROGBASE 3", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, W, H, SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL);
 
 
     SDL_ShowCursor(SDL_DISABLE);
@@ -50,7 +50,7 @@ int main(int argv, char ** argc) {
         SDL_RenderPresent(ren);
 
         /* Vertical collision detection */
-        double eyeheight = ducking ? DuckHeight : EyeHeight;
+        double eyeheight = ducking ? DuckH : EyeH;
         ground = !falling;
         if(falling) {
             game.player.velocity.z -= 0.05f; /* Add gravity */
@@ -83,15 +83,15 @@ int main(int argv, char ** argc) {
             const struct xy* const vert = sect->vertex;
             /* Check if the player is about to cross one of the sector's edges */
             for(unsigned s = 0; s < sect->npoints; ++s)
-                if(IntersectBox(px,py, px+dx,py+dy, vert[s+0].x, vert[s+0].y, vert[s+1].x, vert[s+1].y)
+                if(IntersectBox2D(px,py, px+dx,py+dy, vert[s+0].x, vert[s+0].y, vert[s+1].x, vert[s+1].y)
                    && PointSide(px+dx, py+dy, vert[s+0].x, vert[s+0].y, vert[s+1].x, vert[s+1].y) < 0)
                 {
                     /* Check where the hole is. */
                     double hole_low  = sect->neighbors[s] < 0 ?  9e9 : max(sect->floor, game.sectors[sect->neighbors[s]].floor);
                     double hole_high = sect->neighbors[s] < 0 ? -9e9 : min(sect->ceil,  game.sectors[sect->neighbors[s]].ceil );
                     /* Check whether we're bumping into a wall. */
-                    if(hole_high < game.player.where.z+HeadMargin
-                       || hole_low  > game.player.where.z-eyeheight+KneeHeight)
+                    if(hole_high < game.player.where.z+HeadM
+                       || hole_low  > game.player.where.z-eyeheight+KneeH)
                     {
                         /* Bumps into a wall! Slide along the wall. */
                         /* This formula is from Wikipedia article "vector projection". */

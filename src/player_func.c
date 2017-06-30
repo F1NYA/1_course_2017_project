@@ -13,7 +13,7 @@ void MovePlayer(Game * game, XY dvec) {
     for(unsigned s = 0; s < (sect->npoints); ++s)
     {
         if (sect->neighbors[s] >= 0
-            && IntersectBox(px, py, px + dvec.x, py + dvec.y, vert[s + 0].x, vert[s + 0].y, vert[s + 1].x, vert[s + 1].y)
+            && IntersectBox2D(px, py, px + dvec.x, py + dvec.y, vert[s + 0].x, vert[s + 0].y, vert[s + 1].x, vert[s + 1].y)
             && PointSide(px + dvec.x, py + dvec.y, vert[s + 0].x, vert[s + 0].y, vert[s + 1].x, vert[s + 1].y) < 0)
         {
             game->player.sector = (unsigned)sect->neighbors[s];

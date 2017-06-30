@@ -6,10 +6,7 @@
 #define PROGBASE3_RENDER_H
 
 #include <SDL2/SDL.h>
-#include <signal.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <collections/player.h>
 #include <collections/sector.h>
 #include <collections/game.h>

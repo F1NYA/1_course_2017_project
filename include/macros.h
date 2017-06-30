@@ -19,29 +19,29 @@
 #define W 2048
 #define H 1080
 
-#define EyeHeight  6
-#define DuckHeight 2.5
-#define HeadMargin 1
-#define KneeHeight 2
+#define EyeH  6
+#define DuckH 2.5
+#define HeadM 1
+#define KneeH 2
 #define hfov (0.73f*H)
 #define vfov (.2f*H)
 
 #define NEAR_Z 1e-4f
 #define FAR_Z  5
-#define NEAR_SIDE 1e-5f
-#define FAR_SIDE 20.f
+#define NEAR_X 1e-5f
+#define FAR_X 20.f
 
-#define vxs(x0,y0, x1,y1)    ((x0)*(y1) - (x1)*(y0))   // vxs: Vector cross product
-// Overlap:  Determine whether the two number ranges overlap.
-#define Overlap(a0,a1,b0,b1) (min(a0,a1) <= max(b0,b1) && min(b0,b1) <= max(a0,a1))
-// IntersectBox: Determine whether two 2D-boxes intersect.
-#define IntersectBox(x0,y0, x1,y1, x2,y2, x3,y3) (Overlap(x0,x1,x2,x3) && Overlap(y0,y1,y2,y3))
+#define vecCrossProd(x0,y0, x1,y1)    ((x0)*(y1) - (x1)*(y0))   // vxs: Vector cross product
+// Overlap_range:  Calc if two number ranges overlap.
+#define Overlap_range(a0,a1,b0,b1) (min(a0,a1) <= max(b0,b1) && min(b0,b1) <= max(a0,a1))
+// IntersectBox2D: Determine whether two 2D-boxes intersect.
+#define IntersectBox2D(x0,y0, x1,y1, x2,y2, x3,y3) (Overlap_range(x0,x1,x2,x3) && Overlap_range(y0,y1,y2,y3))
 // PointSide: Determine which side of a line the point is on. Return value: <0, =0 or >0.
-#define PointSide(px,py, x0,y0, x1,y1) vxs((x1)-(x0), (y1)-(y0), (px)-(x0), (py)-(y0))
-// Intersect: Calculate the point of intersection between two lines.
-#define Intersect(x1,y1, x2,y2, x3,y3, x4,y4) ((struct xy) { \
-    vxs(vxs(x1,y1, x2,y2), (x1)-(x2), vxs(x3,y3, x4,y4), (x3)-(x4)) / vxs((x1)-(x2), (y1)-(y2), (x3)-(x4), (y3)-(y4)), \
-    vxs(vxs(x1,y1, x2,y2), (y1)-(y2), vxs(x3,y3, x4,y4), (y3)-(y4)) / vxs((x1)-(x2), (y1)-(y2), (x3)-(x4), (y3)-(y4)) })
+#define PointSide(px,py, x0,y0, x1,y1) vecCrossProd((x1)-(x0), (y1)-(y0), (px)-(x0), (py)-(y0))
+// IntersectLines: Calculate the point of intersection between two lines.
+#define IntersectLines(x0,y0, x1,y1, x2,y2, x3,y3) ((struct xy) { \
+    vecCrossProd(vecCrossProd(x0,y0, x1,y1), (x0)-(x1), vecCrossProd(x2,y2, x3,y3), (x2)-(x3)) / vecCrossProd((x0)-(x1), (y0)-(y1), (x2)-(x3), (y2)-(y3)), \
+    vecCrossProd(vecCrossProd(x0,y0, x1,y1), (y0)-(y1), vecCrossProd(x2,y2, x3,y3), (y2)-(y3)) / vecCrossProd((x0)-(x1), (y0)-(y1), (x2)-(x3), (y2)-(y3)) })
 
 #define Yaw(y,z) (y + z * (game->player.yaw))
 

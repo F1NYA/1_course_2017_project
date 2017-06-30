@@ -70,8 +70,8 @@ void DrawScreen(Game * game) {
             /* If it's partially behind the player, clip it against player's view frustrum */
             if(rz1 <= 0 || rz2 <= 0) {
                 // Find an intersection between the wall and the approximate edges of player's view
-                XY i1 = Intersect(rx1,rz1,rx2,rz2, -NEAR_SIDE, NEAR_Z, -FAR_SIDE, FAR_Z);
-                XY i2 = Intersect(rx1,rz1,rx2,rz2,  NEAR_SIDE, NEAR_Z,  FAR_SIDE, FAR_Z);
+                XY i1 = IntersectLines(rx1,rz1,rx2,rz2, -NEAR_X, NEAR_Z, -FAR_X, FAR_Z);
+                XY i2 = IntersectLines(rx1,rz1,rx2,rz2,  NEAR_X, NEAR_Z,  FAR_X, FAR_Z);
 
                 if(rz1 < NEAR_Z) {
                     if(i1.y > 0) {

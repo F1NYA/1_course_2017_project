@@ -2,15 +2,14 @@
 // Created by George Kobelev on 6/27/17.
 //
 #include <data_loader.h>
-#include <collections/game.h>
 #include <macros.h>
 
 void uploadData(Game * game) {
     //Sector * sectors = game->sectors;
     //int NumSectors = game->sectornum;
-    FILE* fp = fopen("map-clear.txt", "rt");
+    FILE* fp = fopen("map.txt", "rt");
     if(!fp) {
-        perror("map-clear.txt");
+        perror("map.txt");
         exit(EXIT_FAILURE);
     }
     char Buf[256], word[256], *ptr;
@@ -57,7 +56,7 @@ void uploadData(Game * game) {
                         {v.x, v.y, 0},
                         {0, 0, 0},
                         angle, 0, 0, 0, n};
-                game->player.where.z = (game->sectors)[game->player.sector].floor + EyeHeight;
+                game->player.where.z = (game->sectors)[game->player.sector].floor + EyeH;
             }
         }
     }
