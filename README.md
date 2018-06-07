@@ -1,5 +1,6 @@
 # 1_course_2017_project
 PSEUDO 3D game engine written with C and SDL2
+![sreenshot](https://drive.google.com/open?id=1T0NFMuxwm_5ABGqYJu94TciIU12qWrML)
 =======
 
 ## How to build
