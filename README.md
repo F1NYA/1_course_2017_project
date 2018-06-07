@@ -37,3 +37,14 @@ You can change macroses in ```include/macros.h```
 #define NEAR_X 1e-5f
 #define FAR_X 20.f
 ```
+
+## Controll
+
+- ```W``` go ahead
+- ```S``` go back
+- ```A``` go left
+- ```D``` go right
+- ```SPACE``` jump
+- ```CTRL``` duck
+- you can rotate camera with your mouse
+- ```Q``` quite
