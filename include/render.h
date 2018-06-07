@@ -1,8 +1,20 @@
 //
-// Created by George Kobelev on 3/19/17.
+// Created by George Kobelev on 5/11/17.
 //
 
-#ifndef INC_1_COURSE_2017_PROJECT_RENDER_H_H
-#define INC_1_COURSE_2017_PROJECT_RENDER_H_H
+#ifndef PROGBASE3_RENDER_H
+#define PROGBASE3_RENDER_H
 
-#endif //INC_1_COURSE_2017_PROJECT_RENDER_H_H
+#include <SDL2/SDL.h>
+#include <stdlib.h>
+#include <collections/player.h>
+#include <collections/sector.h>
+#include <collections/game.h>
+
+/**
+ * @brief drawing
+ * @param game using for game statement;
+ */
+void DrawScreen(Game * game);
+
+#endif //PROGBASE3_RENDER_H

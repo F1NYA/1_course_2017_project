@@ -1,0 +1,1 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++   -std=c++11 -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/1_course_2017_project.dir/main.cpp.o CMakeFiles/1_course_2017_project.dir/src/render.c.o CMakeFiles/1_course_2017_project.dir/tests/main.c.o  -o 1_course_2017_project 
